@@ -8,7 +8,8 @@
         title, \
         title_kana, \
         publisher_name, \
-        purchase_date \
+        purchase_date, \
+        isbn \
     from    Book  \
         join ( \
             select \
