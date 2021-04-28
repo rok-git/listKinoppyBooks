@@ -1,0 +1,4 @@
+/dbformat.sql
+*.o
+.DS_Store
+/listKinoppyBooks
