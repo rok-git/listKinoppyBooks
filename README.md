@@ -30,3 +30,6 @@ Or if you have nkf installed,
 `./listKinoppyBooks | nkf -Ws > ./kino.csv`
 
 I don't know well about character encodings, I think nkf is preferable than iconv.
+
+### Bugs
+
