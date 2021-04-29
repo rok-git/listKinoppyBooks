@@ -11,14 +11,14 @@
         purchase_date, \
         isbn \
     from    Book  \
-        join ( \
+        left join ( \
             select \
                 name as author_name, \
                 name_kana as author_kana,\
                 book_id \
             from Author, BookAuthor using(author_id)) \
             using (book_id) \
-        join ( \
+        left join ( \
             select \
                 name as publisher_name, \
                 book_id \
@@ -28,6 +28,7 @@
 #define DATE_FORMAT @"yyyy-MM-dd HH:mm:ss"
 #define DEF_TZ @"JST"
 #define DATE_EPOCH @"1970-01-01"
+#define NULLSTR @""
 
 
 int
@@ -88,11 +89,11 @@ main()
                 }
             }
             [bookData enumerateKeysAndObjectsUsingBlock: ^(NSString *key, NSArray *values, BOOL *stop){
-                NSString *authors = [[values[0] componentsJoinedByString: @", "] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""];
-                NSString *authors_kana = [[values[1] componentsJoinedByString: @", "] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""];
+                NSString *authors = [[[values[0] componentsJoinedByString: @", "] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""] stringByReplacingOccurrencesOfString: @"SQLITE_NULL" withString: NULLSTR];
+                NSString *authors_kana = [[[values[1] componentsJoinedByString: @", "] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""] stringByReplacingOccurrencesOfString: @"SQLITE_NULL" withString: NULLSTR];
                 NSString *title = [values[2] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""];
                 NSString *title_kana =[values[3] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""];
-                NSString *publisher = [values[4] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""];
+                NSString *publisher = [[values[4] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""] stringByReplacingOccurrencesOfString: @"SQLITE_NULL" withString: NULLSTR];
                 NSString *purchase_date = [[dateFormatter stringFromDate: values[5]] stringByReplacingOccurrencesOfString: @"\"" withString: @"\"\""];
                 NSString *outStr = [NSString
                     stringWithFormat: @"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\"\n",
