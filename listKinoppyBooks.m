@@ -9,7 +9,7 @@
         title_kana, \
         publisher_name, \
         purchase_date, \
-        isbn \
+        isbn                    /* not used now... */ \
     from    Book  \
         left join ( \
             select \
@@ -36,7 +36,7 @@ main()
 {
     @autoreleasepool{
         NSError *err = nil;
-        NSString *str = DATE_EPOCH;  // Epoch of Kinoppy's buydate ?
+        NSString *str = DATE_EPOCH;  // Epoch of Kinoppy's purchase date ?
         NSDataDetector *det = [NSDataDetector dataDetectorWithTypes: NSTextCheckingTypeDate error: &err];
         NSTextCheckingResult *match = [det firstMatchInString: str options: 0 range: NSMakeRange(0, [str length])];
         NSDate *refDate = [match date];
@@ -55,28 +55,25 @@ main()
             dateFormatter.timeZone = [NSTimeZone timeZoneWithName: DEF_TZ];
             NSArray *data;
             NSString *outStr;
-            int count = 0;
             NSMutableDictionary *bookData = [NSMutableDictionary dictionary]; // key: isbn, value: book info
             NSString *key = nil;
             while((data = [stmt step])){
                 key = data[6];          // use isbn as a key in default
                 if(key.length == 0){
-                    key = data[2];      // no isbn found then use title as key
+                    key = data[2];      // no isbn found then use title as a key
                 }
-                if(bookData[key]){
-                    // Already an entry exists.  
+                if(bookData[key]){      // Already an entry exists.
                     // This may occur when more than one author_name or more than one author_kana exist.
                     // Other info must be the same.
                     // But, perhaps data[4] (publisher name) can be multiple value……
-                    // if it occurs modify code here.
+                    // Modify code here in such cases.
                     for(int i = 0; i < 2; i++){
                         // only data[0] (author name), data[1] (author name in kana) can have  mutliple values;
                         if(data[i]){
                             [bookData[key][i] addObject: data[i]];
                         }
                     }
-                }else{
-                    // No entry exists.  Create new one.
+                }else{                  // No entry exists.  Create new one.
                     bookData[key] = @[
                         [@[data[0]] mutableCopy],
                         [@[data[1]] mutableCopy],
