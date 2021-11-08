@@ -1,7 +1,7 @@
-CC = cc
+CC = cc -arch x86_64 -arch arm64
 LDFLAGS = -framework Foundation -lsqlite3
 #CFLAGS = -fobjc-arc -g
-CFLAGS = -fobjc-arc -arch x86_64 
+CFLAGS = -fobjc-arc
 
 OBJ = SQLite3DB.o listKinoppyBooks.o
 PROG = listKinoppyBooks
